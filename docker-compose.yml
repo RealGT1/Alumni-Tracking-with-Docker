@@ -1,0 +1,54 @@
+services:
+  client:
+    container_name: react-app-dockerize_c
+    build:
+      context: ./client/
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: npm run dev
+
+  server:
+    image: node:alpine
+    container_name: server
+    working_dir: /app
+    volumes:
+      - ./server:/app
+    command: [ "npm", "start" ]
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.4
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: example_password
+      MYSQL_DATABASE: example_db
+      MYSQL_USER: example_user
+      MYSQL_PASSWORD: example_password
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: example_user
+      PMA_PASSWORD: example_password
+      PMA_ARBITRARY: 1
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+volumes:
+  mariadb_data:

@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "nodemailer": "^6.9.9",
+    "react-autosuggest": "^10.1.0",
+    "react-icons": "^5.0.1",
+    "use-debounce": "^10.0.0"
+  }
+}
